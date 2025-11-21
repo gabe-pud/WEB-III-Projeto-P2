@@ -1,8 +1,185 @@
 {% extends "layouts/base.html" %}
-{% block title %}Litterae Libri{% endblock title %}
+{% load static %}
 
+{% block title %}Home - Litterae Libri{% endblock title %}
 
 {% block content %}
+    <section class="text-center py-16 md:py-24 bg-indigo-50 rounded-xl shadow-lg mb-12">
+        {% if pagina %}
+            <h1 class="text-4xl md:text-6xl font-extrabold text-indigo-800 mb-4 leading-tight">
+                {{ pagina.texto_chamada|linebreaksbr }}
+            </h1>
+            <p class="text-lg md:text-xl text-gray-600 mb-8">
+                Explore nosso acervo único de literatura e mídia.
+            </p>
+            
+            {% if not user.is_authenticated %}
+                <a href="{% url 'cadastro' %}" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 transform hover:scale-105">
+                    <i data-lucide="book-open" class="w-5 h-5 mr-2"></i>
+                    Cadastre-se e Comece a Comprar
+                </a>
+            {% else %}
+                <a href="#produtos" class="inline-flex items-center justify-center px-8 py-3 border border-transparent text-base font-medium rounded-lg shadow-lg text-white bg-green-600 hover:bg-green-700 transition duration-300 transform hover:scale-105">
+                    <i data-lucide="search" class="w-5 h-5 mr-2"></i>
+                    Ver Catálogo Agora
+                </a>
+            {% endif %}
+        {% else %}
+            <h1 class="text-4xl font-bold text-red-600">Conteúdo Institucional Não Cadastrado!</h1>
+            <p class="text-gray-600 mt-2">Acesse a área administrativa e cadastre o objeto "Página Institucional".</p>
+        {% endif %}
+    </section>
 
+    <section id="sobre" class="py-12 md:py-16">
+        {% if pagina %}
+        <div class="grid md:grid-cols-2 gap-10 items-center">
+
+            <div class="order-2 md:order-1 space-y-4">
+                <h2 class="text-3xl font-bold text-gray-800 border-b-2 border-indigo-400 pb-2 inline-block">Sobre Nós</h2>
+                <p class="text-gray-600 leading-relaxed text-lg">
+                    {{ pagina.texto_sobre|linebreaksbr }}
+                </p>
+                <div class="pt-4">
+                    <a href="#contato" class="text-indigo-600 font-medium hover:text-indigo-800 flex items-center">
+                        Entre em Contato 
+                        <i data-lucide="arrow-right" class="w-4 h-4 ml-1"></i>
+                    </a>
+                </div>
+            </div>
+
+            <div class="order-1 md:order-2">
+                {% if pagina.imagem_sobre %}
+                    <img src="{{ pagina.imagem_sobre.url }}" alt="Imagem Institucional Sobre" class="w-full h-auto object-cover rounded-xl shadow-2xl transition duration-500 hover:shadow-indigo-300/50">
+                {% else %}
+                    <div class="bg-gray-200 h-64 w-full rounded-xl flex items-center justify-center text-gray-500">
+                        Placeholder de Imagem Sobre
+                    </div>
+                {% endif %}
+            </div>
+        </div>
+        {% endif %}
+    </section>
+
+    <section id="produtos" class="py-12 md:py-16 bg-gray-100 rounded-xl shadow-inner mt-12">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-10">Nosso Catálogo de Itens</h2>
+        
+        {% if itens_catalogo %}
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-8 justify-items-center">
+            
+            {% for item in itens_catalogo %}
+            <div class="bg-white rounded-xl shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden w-full max-w-sm">
+
+                {% if item.foto %}
+                    <img src="{{ item.foto.url }}" alt="Capa do Livro/Mídia: {{ item.nome }}" class="w-full h-64 object-cover">
+                {% else %}
+                    <div class="bg-indigo-200 h-64 w-full flex items-center justify-center text-indigo-700 font-medium">
+                        Sem Imagem
+                    </div>
+                {% endif %}
+
+                <div class="p-5">
+
+                    <h3 class="text-xl font-bold text-gray-900 truncate mb-1" title="{{ item.nome }}">{{ item.nome }}</h3>
+
+                    <p class="text-2xl font-extrabold text-green-600 mb-3">
+                        R$ {{ item.preco|floatformat:2 }}
+                    </p>
+
+                    <p class="text-sm text-gray-500 mb-4 line-clamp-3">{{ item.descricao }}</p>
+
+                    <div class="flex justify-between items-center mb-4">
+                        <span class="text-sm font-semibold 
+                            {% if item.is_disponivel %}text-green-600{% else %}text-red-600{% endif %}">
+                            Estoque: {{ item.estoque }}
+                        </span>
+                        <span class="text-xs px-2 py-0.5 rounded-full font-bold 
+                            {% if item.is_disponivel %}bg-green-100 text-green-700{% else %}bg-red-100 text-red-700{% endif %}">
+                            {{ item.get_status_display|default:item.is_disponivel|yesno:"Disponível,Esgotado" }}
+                        </span>
+                    </div>
+
+                    {% if item.is_disponivel %}
+                    {% comment %} {% url 'compra' item.id %} {% endcomment %}
+                        <a href="#" 
+                           class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md">
+                            <i data-lucide="shopping-cart" class="w-4 h-4 mr-2"></i>
+                            Comprar
+                        </a>
+                    {% else %}
+                        <button disabled class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-gray-400 cursor-not-allowed">
+                            Esgotado
+                        </button>
+                    {% endif %}
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+            <p class="text-center text-gray-500 text-lg">Nenhum item disponível no catálogo no momento.</p>
+        {% endif %}
+    </section>
+
+    <section id="contato" class="py-12 md:py-16">
+        <h2 class="text-3xl font-bold text-center text-gray-800 mb-10 border-b-2 border-indigo-400 pb-2 inline-block mx-auto">Fale Conosco</h2>
+
+        <div class="grid md:grid-cols-2 gap-10">
+
+            {% if pagina %}
+            <div class="bg-white p-8 rounded-xl shadow-xl space-y-6">
+                <h3 class="text-xl font-semibold text-gray-800">Informações de Contato</h3>
+                
+                <div class="flex items-start space-x-3">
+                    <i data-lucide="map-pin" class="w-6 h-6 text-indigo-600 shrink-0 mt-1"></i>
+                    <div>
+                        <p class="font-medium">Endereço:</p>
+                        <p class="text-gray-600">{{ pagina.endereco }}</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <i data-lucide="message-square" class="w-6 h-6 text-indigo-600 shrink-0 mt-1"></i>
+                    <div>
+                        <p class="font-medium">WhatsApp:</p>
+                        <p class="text-gray-600">{{ pagina.whatsapp }}</p>
+                    </div>
+                </div>
+
+                <div class="flex items-start space-x-3">
+                    <i data-lucide="mail" class="w-6 h-6 text-indigo-600 shrink-0 mt-1"></i>
+                    <div>
+                        <p class="font-medium">E-mail:</p>
+                        <p class="text-gray-600">{{ pagina.email }}</p>
+                    </div>
+                </div>
+
+                <h3 class="text-xl font-semibold text-gray-800 pt-4">Localização</h3>
+                <div class="h-64 w-full bg-gray-200 rounded-lg overflow-hidden border border-gray-300">
+                    <p class="text-center text-gray-500 pt-10">Opcional: Embed de mapa do Google Maps</p>
+                </div>
+            </div>
+            {% endif %}
+
+            <div class="bg-white p-8 rounded-xl shadow-xl">
+                <h3 class="text-xl font-semibold text-gray-800 mb-4">Envie uma Mensagem</h3>
+                <form method="post" action="{% url 'index' %}" class="space-y-4">
+                    {% csrf_token %}
+                    
+                    {% for field in form_contato %}
+                        <div>
+                            <label for="{{ field.id_for_label }}" class="block text-sm font-medium text-gray-700 mb-1">{{ field.label }}</label>
+                            {{ field }}
+                            {% if field.errors %}
+                                <p class="mt-1 text-sm text-red-600">{{ field.errors|striptags }}</p>
+                            {% endif %}
+                        </div>
+                    {% endfor %}
+                    <button type="submit" class="w-full flex items-center justify-center px-4 py-2 border border-transparent text-base font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md transform hover:scale-[1.01]">
+                        <i data-lucide="send" class="w-5 h-5 mr-2"></i>
+                        Enviar Mensagem
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
 {% endblock content %}
 
