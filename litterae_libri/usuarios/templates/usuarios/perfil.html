@@ -1,0 +1,83 @@
+{% extends 'layouts/base.html' %}
+{% load static %}
+{% load humanize %}
+
+{% block title %}Perfil de {{ user.username }} - Litterae Libri{% endblock title %}
+
+{% block content %}
+<div class="bg-white p-8 rounded-xl shadow-2xl border border-indigo-100">
+    <div class="flex items-center space-x-4 border-b pb-4 mb-6">
+        <i data-lucide="user-circle" class="w-12 h-12 text-indigo-600"></i>
+        <div>
+            <h1 class="text-3xl font-bold text-gray-800">Olá, {{ usuario.first_name|default:usuario.username }}!</h1>
+            <p class="text-gray-500">Bem-vindo(a) à sua área de perfil.</p>
+        </div>
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-700 mb-4">Seus Dados</h2>
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-4 mb-8 text-sm">
+        <div class="p-3 bg-gray-50 rounded-lg">
+            <p class="font-medium text-gray-600">Nome de Usuário:</p>
+            <p class="text-gray-800">{{ usuario.username }}</p>
+        </div>
+        <div class="p-3 bg-gray-50 rounded-lg">
+            <p class="font-medium text-gray-600">E-mail:</p>
+            <p class="text-gray-800">{{ usuario.email }}</p>
+        </div>
+        <div class="p-3 bg-gray-50 rounded-lg">
+            <p class="font-medium text-gray-600">Nome Completo:</p>
+            <p class="text-gray-800">{{ usuario.first_name }} {{ usuario.last_name }}</p>
+        </div>
+        {% if usuario.data_nascimento %}
+            <div class="p-3 bg-gray-50 rounded-lg">
+                <p class="font-medium text-gray-600">Data de Nascimento:</p>
+                <p class="text-gray-800">{{ usuario.data_nascimento|date:"d/m/Y" }}</p>
+            </div>
+        {% endif %}
+    </div>
+
+    <h2 class="text-2xl font-semibold text-gray-700 border-t pt-6 mt-6 mb-4">Seus Pedidos Realizados</h2>
+    
+    {% if pedidos %}
+        <div class="overflow-x-auto rounded-lg shadow-md border border-gray-200">
+            <table class="min-w-full divide-y divide-gray-200">
+                <thead class="bg-gray-50">
+                    <tr>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Item</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Quantidade</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Total</th>
+                        <th class="px-6 py-3 text-left text-xs font-medium text-gray-500 uppercase tracking-wider">Data do Pedido</th>
+                    </tr>
+                </thead>
+                <tbody class="bg-white divide-y divide-gray-200">
+                    {% for pedido in pedidos %}
+                    <tr class="hover:bg-indigo-50 transition duration-150">
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-medium text-indigo-600">
+                            {{ pedido.produto.nome }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ pedido.quantidade }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm font-semibold text-green-700">
+                            R$ {{ pedido.total|intcomma|floatformat:2 }}
+                        </td>
+                        <td class="px-6 py-4 whitespace-nowrap text-sm text-gray-500">
+                            {{ pedido.data|date:"d/m/Y H:i" }}
+                        </td>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+        </div>
+    {% else %}
+        <div class="text-center p-6 border-2 border-dashed border-gray-300 rounded-lg bg-gray-50">
+            <p class="text-gray-500">Você ainda não realizou nenhum pedido em nosso acervo.</p>
+            <a href="{% url 'index' %}" class="mt-3 inline-flex text-indigo-600 hover:text-indigo-800 font-medium items-center">
+                <i data-lucide="chevron-left" class="w-4 h-4 mr-1"></i>
+                Voltar ao Catálogo
+            </a>
+        </div>
+    {% endif %}
+
+</div>
+{% endblock content %}
