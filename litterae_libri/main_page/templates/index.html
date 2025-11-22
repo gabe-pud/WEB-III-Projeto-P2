@@ -99,8 +99,7 @@
                     </div>
 
                     {% if item.is_disponivel %}
-                    {% comment %} {% url 'compra' item.id %} {% endcomment %}
-                        <a href="#" 
+                        <a href="{% url 'compra' item.id %}" 
                            class="w-full inline-flex items-center justify-center px-4 py-2 border border-transparent text-sm font-medium rounded-lg text-white bg-indigo-600 hover:bg-indigo-700 transition duration-300 shadow-md">
                             <i data-lucide="shopping-cart" class="w-4 h-4 mr-2"></i>
                             Comprar

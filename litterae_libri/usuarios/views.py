@@ -6,7 +6,7 @@ from django.urls import reverse_lazy
 from django.contrib import messages
 from .models import UsuarioCustomizado
 from .forms import CustomUserCreationForm
-
+from pedidos.models import Pedido
 
 class CadastroView(CreateView):
     form_class = CustomUserCreationForm
@@ -39,5 +39,12 @@ class PerfilView(LoginRequiredMixin, DetailView):
     
     def get_object(self):
         return self.request.user
-
+    
+    def get_context_data(self, **kwargs):
+        context = super().get_context_data(**kwargs)
+        
+        context['pedidos'] = Pedido.objects.filter(usuario=self.request.user).order_by('-data')
+        
+        return context
+    
     

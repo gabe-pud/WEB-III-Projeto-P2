@@ -49,6 +49,7 @@ INSTALLED_APPS = [
     'institucional',
     'catalogo',
     'usuarios',
+    'pedidos',
 ]
 
 MIDDLEWARE = [
