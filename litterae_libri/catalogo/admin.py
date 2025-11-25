@@ -3,7 +3,7 @@ from .models import ItemCatalogo
 
 @admin.register(ItemCatalogo)
 class ItemCatalogoAdmin(admin.ModelAdmin):
-    list_display = ('nome', 'preco', 'estoque', 'is_disponivel', 'criado_em')
+    list_display = ('nome', 'id', 'preco', 'estoque', 'is_disponivel', 'criado_em')
     list_filter = ('criado_em', 'atualizado_em', 'estoque')
     search_fields = ('nome', 'descricao')
     
