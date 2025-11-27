@@ -20,6 +20,12 @@ class Pagina(models.Model):
     endereco = models.CharField(max_length=255, verbose_name="Endereço Físico")
     email = models.EmailField(max_length=100, verbose_name="E-mail de Contato")
     whatsapp = models.CharField(max_length=20, verbose_name="WhatsApp para Contato", help_text="Ex: +55 (11) 98765-4321")
+    maps_embed = models.TextField(
+        blank=True,
+        null=True,
+        verbose_name="Embed do Google Maps",
+        help_text="Cole aqui o código iframe de embed do Google Maps (opcional)."
+    )
 
     criado_em = models.DateTimeField(auto_now_add=True)
     atualizado_em = models.DateTimeField(auto_now=True)

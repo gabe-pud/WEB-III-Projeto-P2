@@ -3,6 +3,7 @@ from .models import Pagina, Contato
 
 @admin.register(Pagina)
 class PaginaAdmin(admin.ModelAdmin):
+
     list_display = ('nome_do_site', 'email', 'whatsapp')
 
     fieldsets = (
@@ -14,6 +15,10 @@ class PaginaAdmin(admin.ModelAdmin):
         }),
         ('Informações de Contato', {
             'fields': ('endereco', 'email', 'whatsapp')
+        }),
+        ('Mapa / Localização', {
+            'fields': ('maps_embed',),
+            'description': 'Cole aqui o iframe do Google Maps para exibir o mapa na página de contato.'
         }),
     )
 
