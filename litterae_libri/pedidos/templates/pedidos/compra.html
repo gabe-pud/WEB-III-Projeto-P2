@@ -20,10 +20,10 @@
                     <p class="text-3xl font-extrabold text-green-600">R$ {{ item.preco|floatformat:2 }}</p>
                     <p class="text-xs text-gray-500 mt-1">Em estoque: {{ item.estoque }} unidades.</p>
                 </div>
-                <div class = "min-w-24 ">
+                <div class = "min-w-24">
 
                     {% if item.foto %}
-                        <img src="{{ item.foto.url }}" alt="Capa: {{ item.nome }}" class="w-24 h-36 object-cover rounded-md shadow">
+                        <img src="{{ item.foto.url }}" alt="Capa: {{ item.nome }}" class="min-w-24 w-fit h-36 object-cover rounded-md shadow">
                     {% endif %}
                 </div>
             </div>
